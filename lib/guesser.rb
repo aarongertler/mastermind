@@ -1,0 +1,2 @@
+class Guesser
+end

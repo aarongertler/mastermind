@@ -29,3 +29,14 @@
 # To-do:
 
 # Let player choose the number of turns they're allowed?
+
+# Dir['./lib/*'].each { |file_name| require file_name }
+
+require './lib/game.rb'
+require './lib/board.rb'
+require './lib/player.rb'
+require './lib/master.rb'
+require './lib/guesser.rb'
+
+
+Game.new(10).play_game

@@ -1,54 +1,29 @@
 class Game
-  def initialize
+  def initialize(rows)
     @turn = 0
     @guess = []
     @master = Master.new
     @guesser = Guesser.new
-    @board = Board.new
-    @code = generate_code
-
-    play_game
-  end
-
-  def generate_code
-    code = []
-    color_array = %w[red,blue,green,yellow,purple,orange]
-    4.times.do 
-      code << color_array[rand(1..6)]
-    end
-  end
-
-  def ask_for_guess
-    puts "What is your guess? (Enter your answer as four comma-separated colors. Order matters!)"
-    puts "Available colors are: (#{color_array})"
-    @guess = gets.chomp.downcase.split(',')
-  end
-
-  def process_guess
-    for i in 0..3
-      if @guess[i] = @code[i]
-        @board[i] = @code[i]
-      elsif @code.include?(@guess[i])
-        @board[i] = "white"
-      end
-    end
+    @board = Board.new(rows)
   end
 
   def report_result
-    puts "Here's the result:"
-    @board.show
+    puts "You now have X colored pegs and Y white pegs." # Replace with counts from the board
+    puts "You now have #{@board.rows - @turn} turns left to break the code."
   end
 
   def play_game
-    while @turn < 12 && victory == false
-      puts @board
-      ask_for_guess
-      process_guess
+    while @turn <= @board.rows && @board != @code
+      puts @board.show
+      @guess = @master.ask_for_guess(@turn)
+      @board.add_pegs(@guess,@master.code,@turn)
       report_result
+      @turn += 1
     end
 
-    if @turn == 12
-      puts "Sorry, you lost"
+    if @turn > @board.rows
+      puts "Sorry, you lost."
+      puts "The real code was: #{@code}"
     else
       puts "You're a winner!"
     end
