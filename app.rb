@@ -29,9 +29,11 @@
 # To-do:
 
 # Let player choose the number of turns they're allowed?
+# Validate guesser/master choice
 
 # Dir['./lib/*'].each { |file_name| require file_name }
 
+require './lib/helper.rb'
 require './lib/game.rb'
 require './lib/board.rb'
 require './lib/player.rb'
@@ -39,4 +41,6 @@ require './lib/master.rb'
 require './lib/guesser.rb'
 
 
-Game.new(10).play_game
+puts "Please type '1' if you want to play as the guesser, and '2' if you want to play as the code-maker."
+choice = gets.chomp
+Game.new(10,choice).play_game

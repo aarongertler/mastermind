@@ -1,25 +1,72 @@
 class Master < Player
-  def initialize
-    @code = generate_code
+  include Helper
+
+  attr_reader :code
+
+  def initialize(role)
+    if role == :guesser
+      @code = generate_code
+    else
+      @code = choose_code
+    end
   end
 
-  def code  # We shouldn't have to write a separate method to get this, right?
-    @code
+  def choose_code
+    code = enter_code
+    if valid_code?(code)
+      code
+    else
+      puts "Please choose four comma-separated colors."
+      choose_code
+    end
   end
 
   def ask_for_guess(turn)
-    good_formatting = false
-    puts "This is turn #{turn}."
+    puts "This is turn #{turn + 1}."
     puts "What is your guess? (Enter your answer as four comma-separated colors. Order matters!)"
     puts "Available colors are: (#{COLOR_ARRAY})"
-    until good_formatting == true
-      guess = gets.chomp.downcase.split(',')
-      if !guess.size == 4
-        puts "Please enter an array of four colors."
+    puts "If you don't want to guess, enter \"quit\" to quit the game."
+  end
+
+  def valid_code?(guess)
+    if guess == ["quit"]
+      quit
+    elsif guess.size != 4
+      puts "Please enter an array of four colors."
+      false
+    elsif guess.any? { |x| !COLOR_ARRAY.include?(x)}
+      puts "Please enter only the colors shown."
+      false
+    else
+      true
+    end
+  end
+
+  def check_guess(guess)
+    @hint = []
+    check_for_whites(check_for_blacks(guess))
+  end
+
+  # Wound up rewriting this whole section because I hadn't realized I was getting the rules right:
+  # [red, red, red, red] *should* return three white pegs if any red is present
+
+  def check_for_blacks(guess)
+    @guess_minus_blacks = []
+    guess.each_with_index do |color, index|
+      if @code[index] == color
+        @hint << "B"
       else
-        good_formatting = true
+        @guess_minus_blacks << guess[index]
       end
     end
-    guess
+    @guess_minus_blacks
   end
+
+  def check_for_whites(guess)
+    guess.each do |peg|
+      @hint << "W" if @code.any? { |color| color == peg }
+    end
+    @hint
+  end
+
 end
