@@ -1,17 +1,13 @@
 class Game
   include Helper
 
-  def initialize(rows,choice)
+  def initialize(rows, choice)
     @turn = 0
     @guesser = Guesser.new
     @board = Board.new(rows)
-    if choice == "1" 
-      @role = :guesser
-    elsif choice == "2"
-      @role = :master
-    else
-      @role = :guesser
-    end
+    @role = :guesser if choice == '1'
+    @role = :master if choice == '2'
+    @role ||= :guesser
     @master = Master.new(@role)
   end
 
@@ -35,8 +31,8 @@ class Game
 
   def play_as_master # highly redundant with the above, shrink it down
     @board.rows.times do
-      @board.show
       automated_guess_cycle
+      @board.show
       victory_check
       @turn += 1
     end
@@ -44,31 +40,28 @@ class Game
   end
 
   def automated_guess_cycle
-    @guess = @guesser.make_automated_guess(@board,@turn)
+    @guess = @guesser.make_automated_guess(@board, @turn)
     @pegs = @master.check_guess(@guess)
-    @board.add_pegs(@guess,@pegs,@turn)
+    @board.add_pegs(@guess, @pegs, @turn)
+    @guesser.process_results(@board, @turn)
   end
 
   def guess_cycle
     @master.ask_for_guess(@turn)
-    @guess = @guesser.make_guess # Ugly redundancy here... how can we avoid running the check on the first iteration of our loop?
-    until @master.valid_code?(@guess)
-      @guess = @guesser.make_guess
-    end
+    @guess = @guesser.make_guess until @master.valid_code?(@guess)
     @pegs = @master.check_guess(@guess)
-    @board.add_pegs(@guess,@pegs,@turn)
+    @board.add_pegs(@guess, @pegs, @turn)
   end
 
   def victory_check
-    if @guess == @master.code
-      puts "You win!"
-      quit
-    end
+    return false if @guess != @master.code # guard clauses! Hooray!
+    puts "You win! The final code was: #{@guess}"
+    quit
   end
 
   def display_loss
-    @board.show
-    puts "Sorry, you lost."
+    puts 'Sorry, you lost.'
+    puts "Your best guess was: #{@guesser.return_best}"
     puts "The real code was: #{@master.code}"
   end
 end

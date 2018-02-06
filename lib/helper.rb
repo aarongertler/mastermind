@@ -2,7 +2,7 @@
 
 module Helper
   def quit
-    puts "Quitting the game..."
+    puts 'Quitting the game...'
     Kernel.exit
   end
 end

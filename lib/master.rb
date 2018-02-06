@@ -2,7 +2,7 @@ class Master < Player
   include Helper
 
   attr_reader :code
-
+  
   def initialize(role)
     if role == :guesser
       @code = generate_code
@@ -29,9 +29,9 @@ class Master < Player
   end
 
   def valid_code?(guess)
-    if guess == ["quit"]
-      quit
-    elsif guess.size != 4
+    return false if guess == nil
+    quit if guess == ["quit"]
+    if guess.size != 4
       puts "Please enter an array of four colors."
       false
     elsif guess.any? { |x| !COLOR_ARRAY.include?(x)}
@@ -47,14 +47,14 @@ class Master < Player
     check_for_whites(check_for_blacks(guess))
   end
 
-  # Wound up rewriting this whole section because I hadn't realized I was getting the rules right:
-  # [red, red, red, red] *should* return three white pegs if any red is present
+# Wound up rewriting this whole section because I wasn't getting the rules right:
+# [red, red, red, red] *should* return three white pegs if any red is present
 
   def check_for_blacks(guess)
     @guess_minus_blacks = []
     guess.each_with_index do |color, index|
       if @code[index] == color
-        @hint << "B"
+        @hint << 'B'
       else
         @guess_minus_blacks << guess[index]
       end
@@ -64,7 +64,7 @@ class Master < Player
 
   def check_for_whites(guess)
     guess.each do |peg|
-      @hint << "W" if @code.any? { |color| color == peg }
+      @hint << 'W' if @code.any? { |color| color == peg }
     end
     @hint
   end

@@ -1,6 +1,7 @@
 class Board
 
   attr_reader :pegs
+  attr_reader :rows
 
   def initialize(rows)
     @board = Array.new(rows) { Array.new(4,"____") }
@@ -18,17 +19,12 @@ class Board
     end
   end
 
-  def rows
-    @rows
-  end
-
-  def add_pegs(guess,pegs,row)
-    # Just assigning @board[row] = guess was leaving all the board_rows as the 
+  def add_pegs(guess, pegs, row)
+    # Just assigning @board[row] = guess was leaving all the board_rows as the
     # updated value of @guess -- could be fixed better later
-    for i in 0..3
+    (0..3).each do |i|
       @board[row][i] = guess[i]
     end
     @pegs[row] = pegs
   end
-
 end

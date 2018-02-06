@@ -25,7 +25,6 @@
 # Player (name, AI or human)
 # Board (array of guesses, with white and black pegs for correct colors and correct color/positions)
 
-
 # To-do:
 
 # Let player choose the number of turns they're allowed?
@@ -40,7 +39,7 @@ require './lib/player.rb'
 require './lib/master.rb'
 require './lib/guesser.rb'
 
-
 puts "Please type '1' if you want to play as the guesser, and '2' if you want to play as the code-maker."
 choice = gets.chomp
-Game.new(10,choice).play_game
+turns_allowed = 10
+Game.new(turns_allowed, choice).play_game
