@@ -46,7 +46,7 @@ class Guesser < Player
   end
 
   def set_best(guess, result, score)
-    puts "Setting a new best now! The last score was #{score}"
+    puts "Setting a new best now! The last score was #{@best_score}"
     # return false if set_score(result) <= set_score(@best_guess[1])
     @best_guess[0] = guess # Store first part of best_guess array (the good guess)
     @best_guess[1] = result # Store second part of best_guess array (the peg count, W and B)
